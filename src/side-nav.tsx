@@ -39,6 +39,7 @@ export function SideNav({
   search,
   searchPlaceholder = "Rechercher…",
   mobile = "drawer",
+  collapsedPaths,
 }: {
   appName: string;
   brandIcon?: ReactNode;
@@ -54,10 +55,15 @@ export function SideNav({
   search?: PaletteSearch;
   searchPlaceholder?: string;
   mobile?: "drawer" | "tabs";
+  /** Pages où la barre est réduite d'office (Service de Booking) ; on peut la déplier le temps de la visite. */
+  collapsedPaths?: string[];
 }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [collapsed, setCollapsed] = useState(initiallyCollapsed);
+  const [chosen, setChosen] = useState(initiallyCollapsed);
+  const [forcedOpen, setForcedOpen] = useState(false);
+  const forced = !!collapsedPaths?.some((path) => pathname === path || pathname.startsWith(`${path}/`));
+  const collapsed = forced ? !forcedOpen : chosen;
   const [searching, setSearching] = useState(false);
   const links = sections.flatMap((section) => section.items);
 
@@ -74,8 +80,12 @@ export function SideNav({
   }, []);
 
   function toggleCollapsed() {
+    if (forced) {
+      setForcedOpen(collapsed);
+      return;
+    }
     const next = !collapsed;
-    setCollapsed(next);
+    setChosen(next);
     document.cookie = `${NAV_COOKIE}=${next ? "collapsed" : "open"}; path=/; max-age=31536000; samesite=lax`;
   }
 

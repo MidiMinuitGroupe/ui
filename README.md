@@ -5,7 +5,7 @@ Ne contient que de l'affichage : aucune donnée, aucun secret (dépôt public, i
 
 ## Installer dans une application (Next.js 16, Tailwind 4)
 
-1. `npm install github:MidiMinuitGroupe/ui#v0.2.0` (toujours une version étiquetée).
+1. `npm install github:MidiMinuitGroupe/ui#v0.2.1` (toujours une version étiquetée).
 2. `next.config.ts` : `transpilePackages: ["@midiminuit/ui"]` (le paquet est livré en TypeScript).
 3. `globals.css` :
    ```css
@@ -31,6 +31,7 @@ Ne contient que de l'affichage : aucune donnée, aucun secret (dépôt public, i
      initiallyCollapsed={isNavCollapsed((await cookies()).get(NAV_COOKIE)?.value)}
      search={maRechercheServeur}   // facultatif : (texte) => Promise<PaletteGroup[]>
      mobile="tabs"                 // ou "drawer"
+     collapsedPaths={["/service"]} // facultatif : barre réduite d'office sur ces pages
    />
    ```
 
