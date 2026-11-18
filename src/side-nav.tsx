@@ -138,11 +138,10 @@ export function SideNav({
               {open ? <X aria-hidden className="h-5 w-5" /> : <Menu aria-hidden className="h-5 w-5" />}
             </button>
           )}
-          <Link href="/" onClick={() => setOpen(false)} className="min-w-0 text-slate-900" aria-label={`Accueil · ${appName}`}>
+          <Link href="/" onClick={() => setOpen(false)} className="min-w-0 shrink-0 text-slate-900" aria-label={`Accueil · ${appName}`}>
             {brand}
           </Link>
-          <span className="flex items-center gap-1 md:hidden">
-            {tabs && top}
+          <span className="flex shrink-0 items-center gap-1 md:hidden">
             <button type="button" onClick={() => setSearching(true)} aria-label="Rechercher" className={navIconButtonClass}>
               <Search aria-hidden className="h-5 w-5" />
             </button>
@@ -163,6 +162,9 @@ export function SideNav({
             {collapsed ? <PanelLeftOpen aria-hidden className="h-4 w-4" /> : <PanelLeftClose aria-hidden className="h-4 w-4" />}
           </button>
         </div>
+
+        {/* Téléphone, onglets : le sélecteur (établissement…) sur sa propre ligne, sous la barre du haut. */}
+        {tabs && top && <div className="px-3 pb-2.5 md:hidden [&_select]:max-w-none">{top}</div>}
 
         <div
           className={`${open && !tabs ? "flex" : "hidden"} absolute inset-x-0 top-14 max-h-[calc(100dvh-3.5rem)] flex-col gap-4 overflow-y-auto border-b border-slate-200 bg-white p-3 shadow-lg md:static md:flex md:max-h-none md:flex-1 md:border-0 md:p-0 md:shadow-none`}
