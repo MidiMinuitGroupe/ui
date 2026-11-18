@@ -5,7 +5,7 @@ Ne contient que de l'affichage : aucune donnée, aucun secret (dépôt public, i
 
 ## Installer dans une application (Next.js 16, Tailwind 4)
 
-1. `npm install github:MidiMinuitGroupe/ui#v0.1.2` (toujours une version étiquetée).
+1. `npm install github:MidiMinuitGroupe/ui#v0.2.0` (toujours une version étiquetée).
 2. `next.config.ts` : `transpilePackages: ["@midiminuit/ui"]` (le paquet est livré en TypeScript).
 3. `globals.css` :
    ```css
@@ -33,6 +33,14 @@ Ne contient que de l'affichage : aucune donnée, aucun secret (dépôt public, i
      mobile="tabs"                 // ou "drawer"
    />
    ```
+
+## Applications sans Tailwind (Bar Manager, Food)
+
+- `layout.tsx` : `import "@midiminuit/ui/tokens.css";`, police Inter (`--font-inter`), puis dans le `<head>` `THEME_SCRIPT`
+  et `THEME_TOGGLE_SCRIPT` (`@midiminuit/ui/theme-toggle-script`), `transpilePackages: ["@midiminuit/ui"]`.
+- La feuille de l'application lit les jetons `--mm-*` (fond, surfaces, bordures, texte, accent, couleurs de statut
+  `--mm-amber-100`, `--mm-red-700`…), tous déclinés en sombre.
+- Bouton de thème : n'importe quel `<button data-mm-theme-toggle>` (icône et titre posés par le script).
 
 ## Ce que fournit le thème
 

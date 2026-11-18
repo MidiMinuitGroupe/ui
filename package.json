@@ -1,6 +1,6 @@
 {
   "name": "@midiminuit/ui",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Thème et composants communs des applications Midi Minuit Groupe (Next.js 16, Tailwind 4).",
   "license": "UNLICENSED",
   "type": "module",
@@ -9,11 +9,14 @@
   ],
   "files": [
     "theme.css",
+    "tokens.css",
     "src"
   ],
   "exports": {
     "./theme.css": "./theme.css",
+    "./tokens.css": "./tokens.css",
     "./theme-script": "./src/theme-script.ts",
+    "./theme-toggle-script": "./src/theme-toggle-script.ts",
     "./theme": "./src/theme.tsx",
     "./nav": "./src/side-nav.tsx",
     "./nav-badge": "./src/nav-badge.tsx",

@@ -1,0 +1,166 @@
+/*
+ * @midiminuit/ui · jetons de couleur en CSS simple, pour les applications sans Tailwind (Bar Manager, Food…).
+ * Mêmes valeurs que theme.css. Clair par défaut ; sombre selon l'appareil ou le choix data-theme="dark" sur <html>
+ * (THEME_SCRIPT de @midiminuit/ui/theme-script dans le <head>). Police : Inter, chargée par l'application (--font-inter).
+ * Les couleurs de statut suivent les noms Tailwind (--mm-amber-100, --mm-red-700…) et ont leur version sombre.
+ */
+:root {
+  color-scheme: light;
+  --mm-font: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mm-radius: 14px;
+  --mm-radius-sm: 10px;
+  --mm-shadow: 0 1px 2px rgb(22 22 29 / 0.04);
+  --mm-bg: #f6f6f9;
+  --mm-surface: #ffffff;
+  --mm-surface-2: #f1f1f5;
+  --mm-surface-3: #e9e9ef;
+  --mm-border: #e5e5ec;
+  --mm-border-strong: #d4d4de;
+  --mm-fg: #16161d;
+  --mm-muted: #676776;
+  --mm-faint: #9898a6;
+  --mm-accent: #7c5cfa;
+  --mm-accent-hover: #6a48ee;
+  --mm-accent-soft: #efeaff;
+  --mm-accent-mid: #d4c8ff;
+  --mm-on-accent: #ffffff;
+  --mm-ink: #16161d;
+  --mm-on-ink: #ffffff;
+  --mm-overlay: rgba(13,13,18,.35);
+  --mm-pole-rh: #7c5cfa;
+  --mm-pole-fnb: #dc5591;
+  --mm-pole-com: #4a7cf0;
+  --mm-pole-ops: #17a299;
+  --mm-amber-50: #fffbeb;
+  --mm-amber-100: #fef3c7;
+  --mm-amber-200: #fde68a;
+  --mm-amber-500: #f59e0b;
+  --mm-amber-700: #b45309;
+  --mm-amber-800: #92400e;
+  --mm-red-50: #fef2f2;
+  --mm-red-100: #fee2e2;
+  --mm-red-200: #fecaca;
+  --mm-red-500: #ef4444;
+  --mm-red-600: #dc2626;
+  --mm-red-700: #b91c1c;
+  --mm-green-50: #f0fdf4;
+  --mm-green-100: #d1fae5;
+  --mm-green-200: #a7f3d0;
+  --mm-green-500: #10b981;
+  --mm-green-700: #047857;
+  --mm-blue-50: #eff6ff;
+  --mm-blue-100: #dbeafe;
+  --mm-blue-200: #bfdbfe;
+  --mm-blue-500: #3b82f6;
+  --mm-blue-600: #2563eb;
+  --mm-blue-700: #1d4ed8;
+  --mm-indigo-100: #e0e7ff;
+  --mm-indigo-800: #3730a3;
+  --mm-pink-100: #fce7f3;
+  --mm-pink-700: #be185d;
+  --mm-violet-50: #f5f3ff;
+  --mm-violet-700: #6d28d9;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --mm-shadow: none;
+    --mm-bg: #0d0d10;
+    --mm-surface: #151519;
+    --mm-surface-2: #1c1c21;
+    --mm-surface-3: #25252c;
+    --mm-border: #26262d;
+    --mm-border-strong: #34343d;
+    --mm-fg: #ededf2;
+    --mm-muted: #9b9baa;
+    --mm-faint: #6b6b78;
+    --mm-accent: #9a83ff;
+    --mm-accent-hover: #b3a1ff;
+    --mm-accent-soft: #241e3d;
+    --mm-accent-mid: #3a3066;
+    --mm-on-accent: #0d0d10;
+    --mm-ink: #ededf2;
+    --mm-on-ink: #151519;
+    --mm-overlay: rgba(0,0,0,.55);
+    --mm-amber-50: #261d0f;
+    --mm-amber-100: #382a12;
+    --mm-amber-200: #4a3817;
+    --mm-amber-500: #f0b445;
+    --mm-amber-700: #f0b445;
+    --mm-amber-800: #f5c76e;
+    --mm-red-50: #2a1517;
+    --mm-red-100: #3a1a1d;
+    --mm-red-200: #4d2226;
+    --mm-red-500: #f2555a;
+    --mm-red-600: #f2555a;
+    --mm-red-700: #ff8a8e;
+    --mm-green-50: #0f241a;
+    --mm-green-100: #133121;
+    --mm-green-200: #1a412d;
+    --mm-green-500: #3fbf76;
+    --mm-green-700: #5fd08f;
+    --mm-blue-50: #0f2030;
+    --mm-blue-100: #132b40;
+    --mm-blue-200: #1a3a54;
+    --mm-blue-500: #5aa6f0;
+    --mm-blue-600: #6cb8ef;
+    --mm-blue-700: #8dc8f3;
+    --mm-indigo-100: #191b36;
+    --mm-indigo-800: #bfc3ff;
+    --mm-pink-100: #3a1a2a;
+    --mm-pink-700: #f7a8c8;
+    --mm-violet-50: #1e1934;
+    --mm-violet-700: #c9bcff;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --mm-shadow: none;
+  --mm-bg: #0d0d10;
+  --mm-surface: #151519;
+  --mm-surface-2: #1c1c21;
+  --mm-surface-3: #25252c;
+  --mm-border: #26262d;
+  --mm-border-strong: #34343d;
+  --mm-fg: #ededf2;
+  --mm-muted: #9b9baa;
+  --mm-faint: #6b6b78;
+  --mm-accent: #9a83ff;
+  --mm-accent-hover: #b3a1ff;
+  --mm-accent-soft: #241e3d;
+  --mm-accent-mid: #3a3066;
+  --mm-on-accent: #0d0d10;
+  --mm-ink: #ededf2;
+  --mm-on-ink: #151519;
+  --mm-overlay: rgba(0,0,0,.55);
+  --mm-amber-50: #261d0f;
+  --mm-amber-100: #382a12;
+  --mm-amber-200: #4a3817;
+  --mm-amber-500: #f0b445;
+  --mm-amber-700: #f0b445;
+  --mm-amber-800: #f5c76e;
+  --mm-red-50: #2a1517;
+  --mm-red-100: #3a1a1d;
+  --mm-red-200: #4d2226;
+  --mm-red-500: #f2555a;
+  --mm-red-600: #f2555a;
+  --mm-red-700: #ff8a8e;
+  --mm-green-50: #0f241a;
+  --mm-green-100: #133121;
+  --mm-green-200: #1a412d;
+  --mm-green-500: #3fbf76;
+  --mm-green-700: #5fd08f;
+  --mm-blue-50: #0f2030;
+  --mm-blue-100: #132b40;
+  --mm-blue-200: #1a3a54;
+  --mm-blue-500: #5aa6f0;
+  --mm-blue-600: #6cb8ef;
+  --mm-blue-700: #8dc8f3;
+  --mm-indigo-100: #191b36;
+  --mm-indigo-800: #bfc3ff;
+  --mm-pink-100: #3a1a2a;
+  --mm-pink-700: #f7a8c8;
+  --mm-violet-50: #1e1934;
+  --mm-violet-700: #c9bcff;
+}
