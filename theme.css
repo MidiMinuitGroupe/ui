@@ -7,7 +7,7 @@
  * Thème du groupe : gris neutres (légèrement violacés), blanc pour les cartes, encre pour les actions, violet en accent.
  * Mode sombre : réglage de l'appareil, ou choix de la personne (data-theme="light" | "dark" posé sur <html> avant l'affichage,
  * voir src/theme.tsx et src/theme-script.ts de ce paquet). On ne réécrit pas les pages : les échelles de couleurs Tailwind utilisées (slate, white, red,
- * amber, emerald, sky, indigo) sont redéfinies en sombre plus bas, les clairs devenant foncés et inversement.
+ * amber, emerald, sky, indigo, pink, orange, violet) sont redéfinies en sombre plus bas, les clairs devenant foncés et inversement.
  */
 /* Les composants du paquet utilisent des classes Tailwind : on les fait lire par Tailwind. */
 @source "./src";
@@ -109,6 +109,17 @@
     --color-indigo-700: #a5abff;
     --color-indigo-800: #bfc3ff;
     --color-indigo-950: #e0e2ff;
+    --color-pink-50: #2a1520;
+    --color-pink-100: #3a1a2a;
+    --color-pink-200: #4d2238;
+    --color-pink-800: #f7a8c8;
+    --color-pink-900: #fbc6db;
+    --color-orange-50: #2a1a0f;
+    --color-orange-100: #3a2312;
+    --color-orange-800: #f9b98a;
+    --color-violet-50: #1e1934;
+    --color-violet-100: #241e3d;
+    --color-violet-800: #c9bcff;
   }
 }
 :root[data-theme="dark"] {
@@ -166,6 +177,17 @@
   --color-indigo-700: #a5abff;
   --color-indigo-800: #bfc3ff;
 --color-indigo-950: #e0e2ff;
+--color-pink-50: #2a1520;
+--color-pink-100: #3a1a2a;
+--color-pink-200: #4d2238;
+--color-pink-800: #f7a8c8;
+--color-pink-900: #fbc6db;
+--color-orange-50: #2a1a0f;
+--color-orange-100: #3a2312;
+--color-orange-800: #f9b98a;
+--color-violet-50: #1e1934;
+--color-violet-100: #241e3d;
+--color-violet-800: #c9bcff;
 }
 
 /* Titres : Inter, serrés. */
