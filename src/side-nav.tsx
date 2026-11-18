@@ -11,7 +11,13 @@ import { CommandPalette, type PaletteSearch } from "./command-palette";
 import { NAV_COOKIE } from "./nav-cookie";
 
 /** Entrée du menu. L'icône est déjà dessinée (`<BookOpen />`) : un layout serveur ne peut pas passer le composant lui-même. */
-export type NavItem = { href: string; label: string; icon: ReactNode };
+export type NavItem = {
+  href: string;
+  label: string;
+  icon: ReactNode;
+  /** Barre d'onglets du téléphone (mobile="tabs") : "hide" = pas d'onglet, "only" = onglet seulement (pas dans la barre latérale). */
+  tab?: "hide" | "only";
+};
 export type NavSection = { label?: string; items: NavItem[] };
 
 const iconBase = "h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900";
@@ -65,7 +71,8 @@ export function SideNav({
   const forced = !!collapsedPaths?.some((path) => pathname === path || pathname.startsWith(`${path}/`));
   const collapsed = forced ? !forcedOpen : chosen;
   const [searching, setSearching] = useState(false);
-  const links = sections.flatMap((section) => section.items);
+  const links = sections.flatMap((section) => section.items.filter((item) => item.tab !== "only"));
+  const tabLinks = sections.flatMap((section) => section.items.filter((item) => item.tab !== "hide"));
 
   // ⌘K / Ctrl+K ouvre la recherche partout.
   useEffect(() => {
@@ -202,7 +209,7 @@ export function SideNav({
               <div key={section.label ?? index} className="flex flex-col gap-0.5">
                 {index > 0 && <div className="mx-1 my-2 h-px bg-slate-200" />}
                 {section.label && <p className={`px-2.5 pb-1 text-xs text-slate-400 ${mini}`}>{section.label}</p>}
-                {section.items.map(renderLink)}
+                {section.items.filter((item) => item.tab !== "only").map(renderLink)}
               </div>
             ))}
           </nav>
@@ -221,7 +228,7 @@ export function SideNav({
 
       {tabs && (
         <nav className="fixed inset-x-0 bottom-0 z-40 flex justify-around border-t border-slate-200 bg-white px-1 pt-1.5 pb-[calc(4px+env(safe-area-inset-bottom))] md:hidden print:hidden">
-          {links.map(({ href, label, icon }) => {
+          {tabLinks.map(({ href, label, icon }) => {
             const active = isActive(href);
             return (
               <Link
