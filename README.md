@@ -24,16 +24,24 @@ Ne contient que de l'affichage : aucune donnée, aucun secret (dépôt public, i
    ```tsx
    <SideNav
      appName="Planning"
+     brandIcon={<AppIcon slug="planning" />}   // @midiminuit/ui/app-icons : rond pastel du pôle, comme sur le portail
      sections={[{ items: [{ href: "/", label: "Accueil", icon: <House /> }] }]}
      badges={{ "/absences": <Suspense><MonCompteur /></Suspense> }}   // NavBadge de @midiminuit/ui/nav-badge
      user={{ name: "Camille Martin", detail: "Manager" }}
-     actions={<a href="…/deconnexion" className={navIconButtonClass}><LogOut /></a>}
+     portalUrl={PORTAL_URL}                   // lien « Portail Midi Minuit » (deux flèches) dans le pied fixe
+     signOutUrl={`${PORTAL_URL}/deconnexion`}  // déconnexion commune ; `actions` reste pour d'autres boutons
      initiallyCollapsed={isNavCollapsed((await cookies()).get(NAV_COOKIE)?.value)}
      search={maRechercheServeur}   // facultatif : (texte) => Promise<PaletteGroup[]>
      mobile="tabs"                 // ou "drawer"
      collapsedPaths={["/service"]} // facultatif : barre réduite d'office sur ces pages
    />
    ```
+
+   Pied commun (v0.4.0), toujours visible en bas de la barre, le menu défilant au-dessus : « Portail Midi Minuit », puis la
+   personne, le bouton de thème et la déconnexion. Sur téléphone en onglets, les mêmes boutons sont dans la barre du haut.
+6. Icônes (`@midiminuit/ui/app-icons`) : `AppIcon` dans les pages ; `appIconSvg(slug)` pour `src/app/icon.svg` (favicon,
+   rond pastel) ; `appIconDataUri(slug, { shape: "square", size })` dans un `<img>` d'`ImageResponse` pour `apple-icon` et
+   les icônes du manifeste (carré plein pastel). Pôle de chaque application dans `APP_POLES`, symboles dans `LOGOS`.
 
 ## Applications sans Tailwind (Bar Manager, Food)
 

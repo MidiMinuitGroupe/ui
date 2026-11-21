@@ -3,7 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, PanelLeftClose, PanelLeftOpen, Search, X } from "lucide-react";
+import { ArrowLeftRight, LogOut, Menu, PanelLeftClose, PanelLeftOpen, Search, X } from "lucide-react";
 import { Brand, BrandMark } from "./brand";
 import { ThemeToggle } from "./theme";
 import { Avatar } from "./avatar";
@@ -32,7 +32,11 @@ export const navIconButtonClass = `inline-flex ${iconBase}`;
 /**
  * Barre latérale commune : réductible aux icônes sur ordinateur (cookie NAV_COOKIE, lu par le layout pour `initiallyCollapsed`),
  * recherche ⌘K (liens du menu + `search`, action serveur de l'application), pastilles par lien (`badges`, à charger à part
- * sous <Suspense> pour ne pas retarder le menu), bouton de thème, actions du pied (déconnexion, lien vers le portail…).
+ * sous <Suspense> pour ne pas retarder le menu).
+ *
+ * Pied commun à toutes les applications, toujours visible en bas de la barre (le menu défile au-dessus) : lien « Portail »
+ * (deux flèches, `portalUrl`), puis la personne, le bouton de thème et la déconnexion commune (`signOutUrl`) ;
+ * `actions` ajoute d'autres boutons (le portail y met son propre bouton de déconnexion).
  *
  * Sur téléphone : `mobile="drawer"` (barre du haut et menu coulissant, comme le portail) ou `mobile="tabs"` (barre d'onglets
  * en bas, comme Planning : prévoir un padding bas d'environ 6 rem sur le contenu).
@@ -45,6 +49,8 @@ export function SideNav({
   sections,
   badges,
   user,
+  portalUrl,
+  signOutUrl,
   actions,
   initiallyCollapsed = false,
   search,
@@ -61,6 +67,10 @@ export function SideNav({
   sections: NavSection[];
   badges?: Partial<Record<string, ReactNode>>;
   user: { name: string; detail?: string };
+  /** Adresse du portail : lien « Portail » en bas de la barre (absent sur le portail lui-même). */
+  portalUrl?: string;
+  /** Déconnexion commune (`PORTAL_URL/deconnexion`). */
+  signOutUrl?: string;
   actions?: ReactNode;
   initiallyCollapsed?: boolean;
   search?: PaletteSearch;
@@ -145,6 +155,31 @@ export function SideNav({
     <Brand name={appName} icon={brandIcon} />
   );
 
+  const signOut = signOutUrl ? (
+    <a href={signOutUrl} className={navIconButtonClass} title="Se déconnecter" aria-label="Se déconnecter">
+      <LogOut aria-hidden className="h-4 w-4" />
+    </a>
+  ) : null;
+  // Lien vers le portail : un bouton rond dans la barre du haut du téléphone, une ligne avec libellé dans la barre latérale.
+  const portalLink = (compact: boolean) =>
+    portalUrl ? (
+      compact ? (
+        <a href={portalUrl} className={navIconButtonClass} title="Revenir au portail" aria-label="Revenir au portail">
+          <ArrowLeftRight aria-hidden className="h-4 w-4" />
+        </a>
+      ) : (
+        <a
+          href={portalUrl}
+          title={collapsed ? "Revenir au portail" : undefined}
+          aria-label="Revenir au portail"
+          className={`flex h-9 items-center gap-2.5 rounded-md px-2.5 text-sm text-slate-700 transition hover:bg-slate-100 hover:text-slate-900 ${collapsed ? "md:justify-center md:px-0" : ""}`}
+        >
+          <ArrowLeftRight aria-hidden className="h-[18px] w-[18px] shrink-0" />
+          <span className={`flex-1 truncate ${mini}`}>Portail Midi Minuit</span>
+        </a>
+      )
+    ) : null;
+
   return (
     <>
       <aside
@@ -175,7 +210,9 @@ export function SideNav({
             </button>
             {tabs && (
               <>
+                {portalLink(true)}
                 <ThemeToggle className={navIconButtonClass} />
+                {signOut}
                 {actions}
               </>
             )}
@@ -195,7 +232,7 @@ export function SideNav({
         {tabs && top && <div className="px-3 pb-2.5 md:hidden [&_select]:max-w-none">{top}</div>}
 
         <div
-          className={`${open && !tabs ? "flex" : "hidden"} absolute inset-x-0 top-14 max-h-[calc(100dvh-3.5rem)] flex-col gap-4 overflow-y-auto border-b border-slate-200 bg-white p-3 shadow-lg md:static md:flex md:max-h-none md:flex-1 md:border-0 md:p-0 md:shadow-none`}
+          className={`${open && !tabs ? "flex" : "hidden"} absolute inset-x-0 top-14 max-h-[calc(100dvh-3.5rem)] flex-col gap-4 overflow-y-auto border-b border-slate-200 bg-white p-3 shadow-lg md:static md:flex md:max-h-none md:min-h-0 md:flex-1 md:overflow-visible md:border-0 md:p-0 md:shadow-none`}
         >
           {(subtitle || top) && (
             <div className={`flex flex-col gap-2 px-1 ${mini}`}>
@@ -215,7 +252,7 @@ export function SideNav({
             <kbd className={`text-[11px] text-slate-400 ${mini}`}>⌘K</kbd>
           </button>
 
-          <nav className="flex flex-col gap-0.5">
+          <nav className="-mx-1 flex flex-col gap-0.5 px-1 md:min-h-0 md:flex-1 md:overflow-y-auto">
             {sections.map((section, index) => (
               <div key={section.label ?? index} className="flex flex-col gap-0.5">
                 {index > 0 && !section.label && <div className="mx-1 my-2 h-px bg-slate-200" />}
@@ -230,14 +267,21 @@ export function SideNav({
             ))}
           </nav>
 
-          <div className={`flex items-center gap-2.5 border-t border-slate-200 px-1 pt-3 md:mt-auto ${collapsed ? "md:flex-col" : ""}`}>
-            <Avatar name={user.name} />
-            <span className={`min-w-0 flex-1 text-sm leading-tight ${mini}`}>
-              <span className="block truncate font-medium">{user.name}</span>
-              {user.detail && <span className="block truncate text-xs text-slate-400">{user.detail}</span>}
-            </span>
-            <ThemeToggle className={navIconButtonClass} />
-            {actions}
+          {/* Pied fixe, le même dans toutes les applications. */}
+          <div className="flex shrink-0 flex-col gap-1 border-t border-slate-200 pt-2">
+            {portalLink(false)}
+            <div className={`flex items-center gap-2 px-1 pt-1 ${collapsed ? "md:flex-col" : ""}`}>
+              <Avatar name={user.name} />
+              <span className={`min-w-0 flex-1 text-sm leading-tight ${mini}`}>
+                <span className="block truncate font-medium">{user.name}</span>
+                {user.detail && <span className="block truncate text-xs text-slate-400">{user.detail}</span>}
+              </span>
+              <span className={`flex shrink-0 items-center gap-0.5 ${collapsed ? "md:flex-col" : ""}`}>
+                <ThemeToggle className={navIconButtonClass} />
+                {signOut}
+                {actions}
+              </span>
+            </div>
           </div>
         </div>
       </aside>
