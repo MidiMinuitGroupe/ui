@@ -1,4 +1,4 @@
-import { THEME_KEY } from "./theme-script";
+import { THEME_COOKIE_JS } from "./theme-cookie";
 
 // Bouton de thème pour les interfaces sans React (Bar Manager, Food) : tout élément [data-mm-theme-toggle]
 // fait tourner auto → clair → sombre au clic, avec l'icône et le titre du choix en cours.
@@ -12,10 +12,12 @@ const LABELS = { auto: "Thème : auto", light: "Thème : clair", dark: "Thème :
 
 // paint() ne redessine un bouton que si son choix a changé (data-mm-theme-painted) : sinon son propre innerHTML
 // relancerait le MutationObserver sans fin et figerait la page.
-export const THEME_TOGGLE_SCRIPT = `(function(){var K="${THEME_KEY}",I=${JSON.stringify(ICONS)},L=${JSON.stringify(LABELS)},N={auto:"light",light:"dark",dark:"auto"};
-function get(){try{var v=localStorage.getItem(K);return v==="light"||v==="dark"?v:"auto"}catch(e){return"auto"}}
+// Le choix est le cookie commun du groupe (./theme-cookie.ts).
+export const THEME_TOGGLE_SCRIPT = `(function(){${THEME_COOKIE_JS}
+var I=${JSON.stringify(ICONS)},L=${JSON.stringify(LABELS)},N={auto:"light",light:"dark",dark:"auto"};
+function get(){try{return mmThemeRead()||"auto"}catch(e){return"auto"}}
 function apply(c){var d=c==="dark"||(c==="auto"&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.setAttribute("data-theme",d?"dark":"light")}
 function paint(){var c=get();document.querySelectorAll("[data-mm-theme-toggle]").forEach(function(b){if(b.getAttribute("data-mm-theme-painted")===c)return;b.setAttribute("data-mm-theme-painted",c);b.innerHTML=I[c];b.title=L[c];b.setAttribute("aria-label",L[c]+" (changer)")})}
-document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-mm-theme-toggle]");if(!b)return;var n=N[get()];try{n==="auto"?localStorage.removeItem(K):localStorage.setItem(K,n)}catch(x){}apply(n);paint()});
+document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-mm-theme-toggle]");if(!b)return;var n=N[get()];try{mmThemeWrite(n)}catch(x){}apply(n);paint()});
 new MutationObserver(paint).observe(document.documentElement,{childList:true,subtree:true});
 document.readyState==="loading"?document.addEventListener("DOMContentLoaded",paint):paint()})();`;

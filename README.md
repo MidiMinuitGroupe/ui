@@ -58,7 +58,9 @@ Ne contient que de l'affichage : aucune donnée, aucun secret (dépôt public, i
   (`pole-rh` pêche, `pole-fnb` jaune, `pole-com` menthe, `pole-ops` lilas) dont `tint` donne les ronds pastel.
 - Titres : `title-page` (grand, gras), `title-section`. Pastille teintée : `tint` + variable `--tint`.
 - Mode sombre sans réécrire les pages : les échelles Tailwind utilisées (slate, white, red, amber, emerald, sky, indigo, pink, orange, violet)
-  sont redéfinies en sombre. Choix auto / clair / sombre gardé dans le navigateur (`ThemeToggle`), `useResolvedTheme()` pour
+  sont redéfinies en sombre. Choix auto / clair / sombre commun à toutes les applications du groupe, par appareil : cookie `mm-theme` posé sur
+  `midiminuitgroupe.com` (`theme-cookie.ts`), le dernier choix fait n'importe où s'applique partout (`ThemeToggle`). Le portail
+  passe `themeScript({ adoptLocal: true })` pour reprendre l'ancien choix gardé en local (v0.4.0 et avant), `useResolvedTheme()` pour
   les composants qui en ont besoin. Variante Tailwind `dark:` branchée sur `data-theme="dark"`.
 - Classes de formulaires, boutons (`buttonClass` violet, `secondaryButtonClass` à contour, `quietButtonClass` gris), filtres en pilules (`pillClass`), onglets (`tabClass`, `underlineTabClass`), lien violet (`linkClass`) : `@midiminuit/ui/classes`.
 - Barre latérale : sélection lavande, liens externes (`external`, `muted`) pour lister des applications, lien « Afficher tout » de section (`more`). Avatars aux initiales : `@midiminuit/ui/avatar`.

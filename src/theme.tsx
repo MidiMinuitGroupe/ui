@@ -2,21 +2,19 @@
 
 import { useSyncExternalStore } from "react";
 import { Monitor, Moon, Sun } from "lucide-react";
-import { THEME_KEY } from "./theme-script";
+import { readThemeCookie, writeThemeCookie, type ThemeChoice } from "./theme-cookie";
 
 /**
- * Thème clair ou sombre. Le choix de la personne (auto, clair, sombre) est gardé dans le navigateur ;
+ * Thème clair ou sombre. Le choix de la personne (auto, clair, sombre) est un cookie commun à toutes les
+ * applications du groupe (./theme-cookie.ts) ;
  * « auto » suit le réglage de l'appareil. Le thème effectif est posé en data-theme sur <html> avant l'affichage
  * par THEME_SCRIPT (./theme-script.ts, dans le <head>), pour éviter un éclair blanc.
  */
-export type ThemeChoice = "auto" | "light" | "dark";
-const KEY = THEME_KEY;
-
+export type { ThemeChoice };
 
 function readChoice(): ThemeChoice {
   try {
-    const value = localStorage.getItem(KEY);
-    return value === "light" || value === "dark" ? value : "auto";
+    return readThemeCookie() ?? "auto";
   } catch {
     return "auto";
   }
@@ -49,8 +47,7 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
       onClick={() => {
         const next = NEXT[choice];
         try {
-          if (next === "auto") localStorage.removeItem(KEY);
-          else localStorage.setItem(KEY, next);
+          writeThemeCookie(next);
         } catch {}
         applyChoice(next);
         window.dispatchEvent(new Event(CHANGE));
