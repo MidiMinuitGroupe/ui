@@ -5,19 +5,19 @@ Ne contient que de l'affichage : aucune donnée, aucun secret (dépôt public, i
 
 ## Installer dans une application (Next.js 16, Tailwind 4)
 
-1. `npm install github:MidiMinuitGroupe/ui#v0.2.3` (toujours une version étiquetée).
+1. `npm install github:MidiMinuitGroupe/ui#v0.3.0` (toujours une version étiquetée).
 2. `next.config.ts` : `transpilePackages: ["@midiminuit/ui"]` (le paquet est livré en TypeScript).
 3. `globals.css` :
    ```css
    @import "tailwindcss";
    @import "@midiminuit/ui/theme.css";
    ```
-4. Layout racine : police Inter avec la variable `--font-inter`, script de thème dans le `<head>`, `suppressHydrationWarning` sur `<html>` :
+4. Layout racine : police Instrument Sans avec la variable `--font-instrument-sans` (depuis la v0.3.0 ; Inter `--font-inter` reste lue à défaut), script de thème dans le `<head>`, `suppressHydrationWarning` sur `<html>` :
    ```tsx
-   import { Inter } from "next/font/google";
+   import { Instrument_Sans } from "next/font/google";
    import { THEME_SCRIPT } from "@midiminuit/ui/theme-script";
-   const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
-   // <html lang="fr" className={inter.variable} suppressHydrationWarning>
+   const sans = Instrument_Sans({ variable: "--font-instrument-sans", subsets: ["latin"] });
+   // <html lang="fr" className={sans.variable} suppressHydrationWarning>
    //   <head><script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} /></head>
    ```
 5. Barre latérale (`@midiminuit/ui/nav`) dans le layout de l'application, icônes lucide-react déjà dessinées :
@@ -37,7 +37,7 @@ Ne contient que de l'affichage : aucune donnée, aucun secret (dépôt public, i
 
 ## Applications sans Tailwind (Bar Manager, Food)
 
-- `layout.tsx` : `import "@midiminuit/ui/tokens.css";`, police Inter (`--font-inter`), puis dans le `<head>` `THEME_SCRIPT`
+- `layout.tsx` : `import "@midiminuit/ui/tokens.css";`, police Instrument Sans (`--font-instrument-sans`), puis dans le `<head>` `THEME_SCRIPT`
   et `THEME_TOGGLE_SCRIPT` (`@midiminuit/ui/theme-toggle-script`), `transpilePackages: ["@midiminuit/ui"]`.
 - La feuille de l'application lit les jetons `--mm-*` (fond, surfaces, bordures, texte, accent, couleurs de statut
   `--mm-amber-100`, `--mm-red-700`…), tous déclinés en sombre.
@@ -45,13 +45,15 @@ Ne contient que de l'affichage : aucune donnée, aucun secret (dépôt public, i
 
 ## Ce que fournit le thème
 
-- Gris neutres légèrement violacés, cartes blanches à bordure fine (`card`), accent violet (`accent`, `accent-soft`),
-  couleurs des pôles « Prisme » (`pole-rh`, `pole-fnb`, `pole-com`, `pole-ops`).
-- Titres : `title-page`, `title-section` (Inter). Pastille teintée : `tint` + variable `--tint`.
+- Refonte 2026 (v0.3.0) : fond blanc, cartes à filet fin sans ombre (`card`), boutons violet profond (`primary`, `primary-hover`),
+  sélection lavande (`accent-soft`), liens violets (`accent`), panneau gris très clair (`panel`), couleurs des pôles
+  (`pole-rh` pêche, `pole-fnb` jaune, `pole-com` menthe, `pole-ops` lilas) dont `tint` donne les ronds pastel.
+- Titres : `title-page` (grand, gras), `title-section`. Pastille teintée : `tint` + variable `--tint`.
 - Mode sombre sans réécrire les pages : les échelles Tailwind utilisées (slate, white, red, amber, emerald, sky, indigo, pink, orange, violet)
   sont redéfinies en sombre. Choix auto / clair / sombre gardé dans le navigateur (`ThemeToggle`), `useResolvedTheme()` pour
   les composants qui en ont besoin. Variante Tailwind `dark:` branchée sur `data-theme="dark"`.
-- Classes de formulaires et boutons : `@midiminuit/ui/classes`. Avatars aux initiales : `@midiminuit/ui/avatar`.
+- Classes de formulaires, boutons (`buttonClass` violet, `secondaryButtonClass` à contour, `quietButtonClass` gris), filtres en pilules (`pillClass`), onglets (`tabClass`, `underlineTabClass`), lien violet (`linkClass`) : `@midiminuit/ui/classes`.
+- Barre latérale : sélection lavande, liens externes (`external`, `muted`) pour lister des applications, lien « Afficher tout » de section (`more`). Avatars aux initiales : `@midiminuit/ui/avatar`.
 
 ## Publier une version
 

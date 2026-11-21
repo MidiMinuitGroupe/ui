@@ -17,10 +17,15 @@ export type NavItem = {
   icon: ReactNode;
   /** Barre d'onglets du téléphone (mobile="tabs") : "hide" = pas d'onglet, "only" = onglet seulement (pas dans la barre latérale). */
   tab?: "hide" | "only";
+  /** Lien vers une autre application (adresse complète) : ouvert sans le routeur, jamais marqué actif. */
+  external?: boolean;
+  /** Grisé (application pas encore en ligne). */
+  muted?: boolean;
 };
-export type NavSection = { label?: string; items: NavItem[] };
+/** `more` : lien discret en violet sous la section (« Toutes les applications »). */
+export type NavSection = { label?: string; items: NavItem[]; more?: { href: string; label: string } };
 
-const iconBase = "h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900";
+const iconBase = "h-8 w-8 items-center justify-center rounded-md text-slate-500 transition hover:bg-slate-100 hover:text-slate-900";
 /** Classe des petits boutons ronds du pied de la barre (thème, déconnexion…), pour les actions passées par l'application. */
 export const navIconButtonClass = `inline-flex ${iconBase}`;
 
@@ -71,8 +76,8 @@ export function SideNav({
   const forced = !!collapsedPaths?.some((path) => pathname === path || pathname.startsWith(`${path}/`));
   const collapsed = forced ? !forcedOpen : chosen;
   const [searching, setSearching] = useState(false);
-  const links = sections.flatMap((section) => section.items.filter((item) => item.tab !== "only"));
-  const tabLinks = sections.flatMap((section) => section.items.filter((item) => item.tab !== "hide"));
+  const links = sections.flatMap((section) => section.items.filter((item) => item.tab !== "only" && !item.external));
+  const tabLinks = sections.flatMap((section) => section.items.filter((item) => item.tab !== "hide" && !item.external));
 
   // ⌘K / Ctrl+K ouvre la recherche partout.
   useEffect(() => {
@@ -96,31 +101,37 @@ export function SideNav({
     document.cookie = `${NAV_COOKIE}=${next ? "collapsed" : "open"}; path=/; max-age=31536000; samesite=lax`;
   }
 
-  const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`));
+  // Lien actif : celui dont l'adresse correspond le plus longuement (« Check-lists » plutôt que « Welcome Book »).
+  const matches = (href: string) => (href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`));
+  const activeHref = (items: NavItem[]) =>
+    items.filter((item) => !item.external && matches(item.href)).sort((a, b) => b.href.length - a.href.length)[0]?.href;
+  const activeLink = activeHref(sections.flatMap((section) => section.items));
+  const activeTab = activeHref(tabLinks);
   // Réduite seulement sur ordinateur : sur téléphone le panneau garde les libellés.
   const mini = collapsed ? "md:hidden" : "";
   const tabs = mobile === "tabs";
 
-  const renderLink = ({ href, label, icon }: NavItem) => {
-    const active = isActive(href);
-    return (
-      <Link
-        key={href}
-        href={href}
-        onClick={() => setOpen(false)}
-        title={collapsed ? label : undefined}
-        aria-current={active ? "page" : undefined}
-        className={`relative flex h-9 items-center gap-2.5 rounded-[9px] border px-2.5 text-sm transition ${collapsed ? "md:justify-center md:px-0" : ""} ${
-          active
-            ? "border-slate-200 bg-slate-100 font-medium text-slate-900 shadow-[0_1px_2px_rgb(22_22_29/0.04)]"
-            : "border-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-900"
-        }`}
-      >
-        <span aria-hidden className="flex shrink-0 [&_svg]:h-4 [&_svg]:w-4">
+  const renderLink = ({ href, label, icon, external, muted }: NavItem) => {
+    const active = href === activeLink;
+    const className = `relative flex h-9 items-center gap-2.5 rounded-md px-2.5 text-sm transition ${collapsed ? "md:justify-center md:px-0" : ""} ${
+      active ? "bg-accent-soft font-medium text-slate-900" : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
+    } ${muted ? "opacity-55" : ""}`;
+    const content = (
+      <>
+        <span aria-hidden className="flex shrink-0 [&_svg]:h-[18px] [&_svg]:w-[18px]">
           {icon}
         </span>
         <span className={`truncate ${mini}`}>{label}</span>
         {badges?.[href]}
+      </>
+    );
+    return external ? (
+      <a key={href} href={href} title={collapsed ? label : undefined} className={className}>
+        {content}
+      </a>
+    ) : (
+      <Link key={href} href={href} onClick={() => setOpen(false)} title={collapsed ? label : undefined} aria-current={active ? "page" : undefined} className={className}>
+        {content}
       </Link>
     );
   };
@@ -138,7 +149,7 @@ export function SideNav({
     <>
       <aside
         data-collapsed={collapsed}
-        className={`group relative z-30 shrink-0 border-b border-slate-200 bg-white md:sticky md:top-0 md:flex md:h-dvh md:flex-col md:gap-4 md:border-r md:border-b-0 md:px-3 md:py-4 md:transition-[width] print:hidden ${
+        className={`group relative z-30 shrink-0 border-b border-slate-200 bg-white md:sticky md:top-0 md:flex md:h-dvh md:flex-col md:gap-3 md:border-r md:border-b-0 md:px-3 md:py-4 md:transition-[width] print:hidden ${
           collapsed ? "md:w-[72px]" : "md:w-[248px]"
         }`}
       >
@@ -197,19 +208,24 @@ export function SideNav({
             type="button"
             onClick={() => setSearching(true)}
             title="Rechercher (⌘K)"
-            className={`hidden h-[38px] w-full items-center gap-2 rounded-[10px] border border-slate-300 bg-white px-3 text-left text-sm text-slate-400 transition hover:border-slate-400 md:flex ${collapsed ? "md:justify-center md:px-0" : ""}`}
+            className={`hidden h-9 w-full items-center gap-2 rounded-md bg-slate-100 px-3 text-left text-sm text-slate-500 transition hover:bg-slate-200 md:flex ${collapsed ? "md:justify-center md:px-0" : ""}`}
           >
             <Search aria-hidden className="h-4 w-4 shrink-0" />
             <span className={`flex-1 truncate ${mini}`}>{searchPlaceholder}</span>
-            <kbd className={`rounded-md border border-slate-200 bg-slate-100 px-1.5 text-[11px] text-slate-500 ${mini}`}>⌘K</kbd>
+            <kbd className={`text-[11px] text-slate-400 ${mini}`}>⌘K</kbd>
           </button>
 
           <nav className="flex flex-col gap-0.5">
             {sections.map((section, index) => (
               <div key={section.label ?? index} className="flex flex-col gap-0.5">
-                {index > 0 && <div className="mx-1 my-2 h-px bg-slate-200" />}
-                {section.label && <p className={`px-2.5 pb-1 text-xs text-slate-400 ${mini}`}>{section.label}</p>}
+                {index > 0 && !section.label && <div className="mx-1 my-2 h-px bg-slate-200" />}
+                {section.label && <p className={`px-2.5 pt-4 pb-1 text-xs text-slate-400 ${mini}`}>{section.label}</p>}
                 {section.items.filter((item) => item.tab !== "only").map(renderLink)}
+                {section.more && (
+                  <Link href={section.more.href} onClick={() => setOpen(false)} className={`px-2.5 py-1.5 text-xs font-medium text-accent hover:underline ${mini}`}>
+                    {section.more.label}
+                  </Link>
+                )}
               </div>
             ))}
           </nav>
@@ -227,17 +243,17 @@ export function SideNav({
       </aside>
 
       {tabs && (
-        <nav className="fixed inset-x-0 bottom-0 z-40 flex justify-around border-t border-slate-200 bg-white px-1 pt-1.5 pb-[calc(4px+env(safe-area-inset-bottom))] md:hidden print:hidden">
+        <nav className="fixed inset-x-0 bottom-0 z-40 flex justify-around border-t border-slate-200 bg-white px-1 pt-2 pb-[calc(8px+env(safe-area-inset-bottom))] md:hidden print:hidden">
           {tabLinks.map(({ href, label, icon }) => {
-            const active = isActive(href);
+            const active = href === activeTab;
             return (
               <Link
                 key={href}
                 href={href}
                 aria-current={active ? "page" : undefined}
-                className={`relative flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-lg px-1 py-1 text-[11px] ${active ? "bg-slate-100 font-medium text-slate-900" : "text-slate-500"}`}
+                className={`relative flex min-w-0 flex-1 flex-col items-center gap-1 px-1 text-[11px] ${active ? "font-semibold text-slate-900" : "text-slate-500"}`}
               >
-                <span aria-hidden className="flex [&_svg]:h-[22px] [&_svg]:w-[22px]">
+                <span aria-hidden className={`flex h-7 w-12 items-center justify-center rounded-full [&_svg]:h-[22px] [&_svg]:w-[22px] ${active ? "bg-accent-soft" : ""}`}>
                   {icon}
                 </span>
                 <span className="max-w-full truncate">{label}</span>

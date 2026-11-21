@@ -1,36 +1,40 @@
 /*
  * @midiminuit/ui · jetons de couleur en CSS simple, pour les applications sans Tailwind (Bar Manager, Food…).
  * Mêmes valeurs que theme.css. Clair par défaut ; sombre selon l'appareil ou le choix data-theme="dark" sur <html>
- * (THEME_SCRIPT de @midiminuit/ui/theme-script dans le <head>). Police : Inter, chargée par l'application (--font-inter).
+ * (THEME_SCRIPT de @midiminuit/ui/theme-script dans le <head>). Police : Instrument Sans, chargée par l'application (--font-instrument-sans), à défaut Inter (--font-inter).
  * Les couleurs de statut suivent les noms Tailwind (--mm-amber-100, --mm-red-700…) et ont leur version sombre.
  */
 :root {
   color-scheme: light;
-  --mm-font: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
-  --mm-radius: 14px;
-  --mm-radius-sm: 10px;
-  --mm-shadow: 0 1px 2px rgb(22 22 29 / 0.04);
-  --mm-bg: #f6f6f9;
+  --mm-font: var(--font-instrument-sans, var(--font-inter)), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mm-radius: 10px;
+  --mm-radius-sm: 6px;
+  --mm-shadow: none;
+  --mm-bg: #ffffff;
   --mm-surface: #ffffff;
-  --mm-surface-2: #f1f1f5;
+  --mm-surface-2: #fafafa;
   --mm-surface-3: #e9e9ef;
   --mm-border: #e5e5ec;
   --mm-border-strong: #d4d4de;
   --mm-fg: #16161d;
   --mm-muted: #676776;
   --mm-faint: #9898a6;
-  --mm-accent: #7c5cfa;
-  --mm-accent-hover: #6a48ee;
-  --mm-accent-soft: #efeaff;
+  --mm-accent: #6c52e0;
+  --mm-accent-hover: #5a40cc;
+  --mm-accent-soft: #eeeafd;
+  /* Boutons principaux : violet profond en aplat. */
+  --mm-primary: #4a27b8;
+  --mm-primary-hover: #3b1d96;
+  --mm-on-primary: #ffffff;
   --mm-accent-mid: #d4c8ff;
   --mm-on-accent: #ffffff;
   --mm-ink: #16161d;
   --mm-on-ink: #ffffff;
   --mm-overlay: rgba(13,13,18,.35);
-  --mm-pole-rh: #7c5cfa;
-  --mm-pole-fnb: #dc5591;
-  --mm-pole-com: #4a7cf0;
-  --mm-pole-ops: #17a299;
+  --mm-pole-rh: #e0703a;
+  --mm-pole-fnb: #c7a20c;
+  --mm-pole-com: #23a26b;
+  --mm-pole-ops: #7c5cfa;
   --mm-amber-50: #fffbeb;
   --mm-amber-100: #fef3c7;
   --mm-amber-200: #fde68a;
@@ -77,7 +81,10 @@
     --mm-faint: #6b6b78;
     --mm-accent: #9a83ff;
     --mm-accent-hover: #b3a1ff;
-    --mm-accent-soft: #241e3d;
+    --mm-accent-soft: #252040;
+    --mm-primary: #7a5cf0;
+    --mm-primary-hover: #8d74f5;
+    --mm-on-primary: #ffffff;
     --mm-accent-mid: #3a3066;
     --mm-on-accent: #0d0d10;
     --mm-ink: #ededf2;
@@ -128,7 +135,10 @@
   --mm-faint: #6b6b78;
   --mm-accent: #9a83ff;
   --mm-accent-hover: #b3a1ff;
-  --mm-accent-soft: #241e3d;
+  --mm-accent-soft: #252040;
+  --mm-primary: #7a5cf0;
+  --mm-primary-hover: #8d74f5;
+  --mm-on-primary: #ffffff;
   --mm-accent-mid: #3a3066;
   --mm-on-accent: #0d0d10;
   --mm-ink: #ededf2;
